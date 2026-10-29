@@ -1,0 +1,205 @@
+@import './assets/fonts/fonts.css';
+
+:root {
+  --paper: #f1efe5;
+  --ink: #263d33;
+  --muted: #657166;
+  --rule: #b8bcaf;
+  --accent: #a55b4d;
+  --sage: #82937c;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input { font: inherit; }
+button { color: inherit; }
+button, summary, label { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+::selection { background: #d9dfcd; color: var(--ink); }
+main { max-width: 1840px; margin: 0 auto; padding: 22px clamp(20px, 3vw, 54px) 0; }
+.masthead { display: flex; justify-content: space-between; gap: 20px; padding-bottom: 13px; border-bottom: 1px solid var(--ink); font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; }
+.project-heading { display: grid; grid-template-columns: minmax(0, 1fr) 235px; align-items: end; gap: 30px; padding: 27px 0 25px; }
+h1 { margin: 0; font-family: var(--display); font-size: clamp(58px, 6.4vw, 112px); font-weight: 500; letter-spacing: -.045em; line-height: .95; }
+h1 em { color: var(--accent); font-weight: 500; white-space: nowrap; }
+.project-heading > p { margin: 0 0 5px; font-size: 14px; line-height: 1.7; color: var(--muted); }
+.experiment-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 13px 0; border-top: 1px solid var(--rule); }
+.interaction-instruction { margin: 0; font-size: 12px; color: var(--muted); }
+.reset-map { flex-shrink: 0; border: 0; border-bottom: 1px solid currentColor; padding: 4px 0; border-radius: 0; background: transparent; font-size: 11px; cursor: pointer; transition: color 150ms ease; }
+.reset-map span { margin-left: 12px; }
+.reset-map:hover { color: var(--accent); }
+.time-controls { display: flex; align-items: center; justify-content: flex-end; gap: 20px; padding: 10px 0 18px; margin-bottom: 20px; border-bottom: 1px solid var(--ink); }
+.control-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); }
+.time-segments { display: flex; align-items: center; gap: 14px; }
+.time-segments button { background: transparent; border: 0; border-bottom: 1px solid transparent; padding: 5px 0; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+.time-segments button + button::before { content: '/'; position: relative; left: -7px; color: var(--rule); }
+.time-segments button[aria-pressed='true'] { color: var(--accent); border-bottom-color: var(--accent); }
+.time-segments button:hover { color: var(--accent); }
+.visitor-count { padding-left: 20px; border-left: 1px solid var(--rule); font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.maps-scroll { overflow: visible; }
+.maps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: 'physical sensory' 'reading key'; gap: 26px 32px; align-items: start; }
+.physical-panel { grid-area: physical; }
+.ambience-panel { grid-area: sensory; }
+.atmosphere-profile { grid-area: reading; }
+.sensory-key { grid-area: key; }
+.map-panel { margin: 0; min-width: 0; }
+figcaption { display: flex; flex-direction: column; gap: 7px; min-height: 58px; }
+.figure-label { font-size: 11px; font-weight: 500; letter-spacing: 1.7px; }
+.figure-caption { color: var(--muted); font-size: 11px; }
+.map-canvas::after { content: ''; position: absolute; inset: 0; pointer-events: none; outline: 1px solid #b8bcaf66; outline-offset: 4px; }
+.section-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; min-height: 30px; margin-bottom: 15px; }
+.section-heading h2 { margin: 0; font-size: 10px; font-weight: 500; letter-spacing: 1.4px; }
+.section-heading > span { flex-shrink: 0; font-size: 8px; letter-spacing: 1.3px; text-transform: uppercase; color: var(--muted); }
+.atmosphere-profile, .sensory-key { min-width: 0; border-top: 1px solid var(--ink); padding-top: 18px; }
+.atmosphere-profile h3 { font-family: var(--display); font-size: clamp(38px, 3.3vw, 60px); font-weight: 500; font-style: italic; letter-spacing: -.025em; color: var(--accent); line-height: 1.03; margin: 0 0 18px; }
+.atmosphere-description { max-width: 61ch; font-size: 12px; line-height: 1.9; margin: 0 0 24px; }
+.atmosphere-scores { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
+.atmosphere-score > div { display: flex; justify-content: space-between; gap: 8px; font-size: 10px; margin-bottom: 8px; }
+.atmosphere-score > div > span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; }
+.atmosphere-score meter { display: block; width: 100%; height: 3px; border: 0; background: #d9ddd1; border-radius: 0; }
+.atmosphere-score meter::-webkit-meter-bar { background: #d9ddd1; border: 0; border-radius: 0; }
+.atmosphere-score meter::-webkit-meter-optimum-value { background: var(--sage); transition: width 150ms ease; }
+.atmosphere-score meter::-moz-meter-bar { background: var(--sage); }
+.model-note { max-width: 75ch; font-size: 9px; color: var(--muted); line-height: 1.8; margin: 20px 0 12px; }
+.model-rules { font-size: 11px; line-height: 1.9; }
+.model-rules summary { cursor: pointer; width: fit-content; color: var(--ink); font-size: 10px; }
+.layer-options { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; }
+.layer-row { display: flex; gap: 11px; align-items: center; min-width: 0; padding: 12px 0; border-bottom: 1px solid #b8bcaf80; cursor: pointer; transition: opacity 160ms ease; }
+.layer-row > svg { width: 34px; height: 34px; flex: 0 0 34px; }
+.layer-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.layer-name { font-size: 11px; font-weight: 500; }
+.layer-description { color: var(--muted); font-size: 9px; line-height: 1.5; }
+.layer-row input { margin: 0 0 0 auto; width: 12px; height: 12px; flex: 0 0 12px; accent-color: var(--ink); cursor: pointer; }
+.layer-row.is-hidden > svg, .layer-row.is-hidden .layer-copy { opacity: .4; }
+.layer-row.is-hidden .layer-name { text-decoration: line-through; }
+.layer-row:hover .layer-name { color: var(--accent); }
+.key-note { font-size: 10px; line-height: 1.8; color: var(--muted); max-width: 62ch; margin: 20px 0 16px; }
+.key-annotation { display: flex; justify-content: space-between; gap: 12px; font-family: var(--display); font-style: italic; font-size: 19px; color: var(--muted); padding-top: 14px; border-top: 1px solid var(--rule); }
+.publication-footer { margin-top: 40px; padding: 14px 0 20px; border-top: 1px solid var(--ink); display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: 1px; }
+.map-canvas { position: relative; width: 100%; isolation: isolate; }
+.map-scene { position: absolute; inset: 0; }
+.physical-panel .map-scene { display: contents; }
+.map-background { display: block; width: 100%; height: 100%; object-fit: contain; }
+.map-object { position: absolute; pointer-events: none; }
+.map-object img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+}
+/* Keep the river's full length while fitting its banks inside the bottom canal. */
+.map-object[data-object-id="stream"] img { object-fit: fill; }
+
+.ambience-panel .map-canvas {
+  background: #faf7ed;
+  overflow: hidden;
+}
+.ambience-panel .map-background { opacity: .13; }
+/* A presentation zoom, applied equally to every layer in the ambience scene.
+   Object coordinates remain shared with the physical map. */
+.ambience-panel .map-scene {
+  transform: translate(-2%, -3%) scale(1.18);
+  transform-origin: top left;
+}
+.ambience-atmosphere {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ambience-movement {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+.ambience-art-title {
+  fill: #245650;
+  font-family: Georgia, serif;
+  font-size: 29px;
+  letter-spacing: 7px;
+}
+.ambience-art-subtitle {
+  fill: #245650;
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+}
+.paper-grain { mix-blend-mode: multiply; }
+.ambience-panel .map-object img { opacity: .25; }
+.ambience-panel .map-object[data-object-id^="tree_cluster"] img { opacity: .55; }
+.ambience-glyph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ambience-glyph[data-symbol-kind="conversation"] { z-index: 1; }
+
+.physical-panel .map-canvas { touch-action: none; user-select: none; }
+.physical-panel .map-background { pointer-events: none; }
+.physical-panel .map-canvas.has-hover { cursor: grab; }
+.physical-panel .map-canvas.is-dragging { cursor: grabbing; }
+.physical-panel .map-object { outline-offset: 3px; border-radius: 3px; }
+.physical-panel .map-object.is-hovered { outline: 1px dashed #245650; }
+.physical-panel .map-object.is-selected,
+.physical-panel .map-object:focus-visible { outline: 2px solid #245650; z-index: 3; }
+.physical-panel .map-object.is-selected img { filter: drop-shadow(0 0 3px #faf7ed); }
+
+/* Remove only the baked-in red strip; the original asset stays intact.
+   The independently controlled SVG supplies all visible traffic marks. */
+.ambience-panel .map-background {
+  mask-image: linear-gradient(to right, transparent 0 11%, #000 11% 100%);
+}
+/* Responsive grid reorders the same stateful components without remounting. */
+@media (max-width: 1150px) {
+  .project-heading { grid-template-columns: minmax(0,1fr) 200px; }
+  .maps { column-gap: 24px; }
+  .section-heading { flex-direction: column; gap: 6px; min-height: 42px; }
+  .layer-options { column-gap: 16px; }
+  .layer-row { gap: 6px; }
+  .layer-row > svg { width: 28px; height: 28px; flex-basis: 28px; }
+  .time-controls { flex-wrap: wrap; gap: 12px 18px; }
+}
+@media (max-width: 760px) {
+  main { padding: 16px 20px 0; }
+  .masthead { font-size: 8px; letter-spacing: 1px; }
+  .masthead > span:last-child { text-align: right; max-width: 150px; }
+  .project-heading { display: block; padding: 25px 0 20px; }
+  h1 { font-size: clamp(54px, 11vw, 82px); max-width: 600px; }
+  .project-heading > p { font-size: 12px; margin: 16px 0 0; }
+  .project-heading br { display: none; }
+  .experiment-toolbar { gap: 16px; align-items: start; }
+  .interaction-instruction { font-size: 11px; line-height: 1.6; max-width: 28ch; }
+  .reset-map { font-size: 10px; }
+  .reset-map span { margin-left: 5px; }
+  .time-controls { justify-content: flex-start; padding-top: 15px; margin-bottom: 20px; }
+  .visitor-count { flex-basis: 100%; padding-left: 0; border-left: 0; }
+  .maps { grid-template-columns: minmax(0,1fr); grid-template-areas: 'physical' 'sensory' 'reading' 'key'; gap: 30px; }
+  figcaption { min-height: 55px; }
+  .section-heading { flex-direction: row; min-height: 30px; }
+  .atmosphere-profile h3 { font-size: 44px; }
+  .atmosphere-description { font-size: 12px; }
+  .layer-row { gap: 9px; min-height: 64px; }
+  .layer-name { font-size: 11px; }
+  .layer-row input { min-width: 14px; width: 14px; height: 14px; }
+  .publication-footer { flex-wrap: wrap; font-size: 8px; gap: 12px; }
+  .publication-footer > span:nth-child(2) { display: none; }
+}
+@media (max-width: 380px) {
+  main { padding-inline: 14px; }
+  .section-heading { flex-direction: column; min-height: 42px; }
+  .layer-options { gap: 0 12px; }
+  .layer-row { gap: 6px; }
+  .layer-row > svg { width: 24px; height: 24px; flex-basis: 24px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }

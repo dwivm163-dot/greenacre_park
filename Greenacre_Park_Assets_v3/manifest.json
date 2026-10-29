@@ -1,0 +1,192 @@
+{
+  "canvas": {
+    "width": 1832,
+    "height": 858
+  },
+  "movableAssets": [
+    {
+      "id": "tree_cluster_01",
+      "physicalImage": "physical/tree_cluster_01.png",
+      "ambienceImage": "ambience/tree_cluster_01.png",
+      "x": 25.109,
+      "y": 28.904,
+      "width": 8.188,
+      "height": 45.921,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "tree_cluster_02",
+      "physicalImage": "physical/tree_cluster_02.png",
+      "ambienceImage": "ambience/tree_cluster_02.png",
+      "x": 33.079,
+      "y": 28.904,
+      "width": 8.188,
+      "height": 45.921,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "tree_cluster_03",
+      "physicalImage": "physical/tree_cluster_03.png",
+      "ambienceImage": "ambience/tree_cluster_03.png",
+      "x": 40.993,
+      "y": 28.904,
+      "width": 8.188,
+      "height": 45.921,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "pergola_upper",
+      "physicalImage": "physical/pergola_upper.png",
+      "ambienceImage": "ambience/pergola_upper.png",
+      "x": 35.535,
+      "y": 11.655,
+      "width": 27.948,
+      "height": 19.114,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "central_seating_01",
+      "physicalImage": "physical/seating_01.png",
+      "ambienceImage": "ambience/seating_01.png",
+      "x": 31.114,
+      "y": 39.51,
+      "width": 3.93,
+      "height": 8.392,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "central_seating_02",
+      "physicalImage": "physical/seating_02.png",
+      "ambienceImage": "ambience/seating_02.png",
+      "x": 38.974,
+      "y": 39.86,
+      "width": 3.93,
+      "height": 8.392,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "central_seating_03",
+      "physicalImage": "physical/seating_03.png",
+      "ambienceImage": "ambience/seating_03.png",
+      "x": 31.114,
+      "y": 55.245,
+      "width": 3.93,
+      "height": 8.392,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "central_seating_04",
+      "physicalImage": "physical/seating_04.png",
+      "ambienceImage": "ambience/seating_04.png",
+      "x": 38.974,
+      "y": 55.944,
+      "width": 3.93,
+      "height": 8.392,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "pergola_seating_01",
+      "physicalImage": "physical/seating_05.png",
+      "ambienceImage": "ambience/seating_05.png",
+      "x": 39.301,
+      "y": 17.483,
+      "width": 3.384,
+      "height": 7.459,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "pergola_seating_02",
+      "physicalImage": "physical/seating_06.png",
+      "ambienceImage": "ambience/seating_06.png",
+      "x": 45.524,
+      "y": 17.483,
+      "width": 3.384,
+      "height": 7.459,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "pergola_seating_03",
+      "physicalImage": "physical/seating_07.png",
+      "ambienceImage": "ambience/seating_07.png",
+      "x": 51.201,
+      "y": 17.599,
+      "width": 3.384,
+      "height": 7.459,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "pergola_seating_04",
+      "physicalImage": "physical/seating_08.png",
+      "ambienceImage": "ambience/seating_08.png",
+      "x": 57.533,
+      "y": 17.716,
+      "width": 3.384,
+      "height": 7.459,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "terrace_seating_01",
+      "physicalImage": "physical/seating_09.png",
+      "ambienceImage": "ambience/seating_09.png",
+      "x": 59.607,
+      "y": 37.995,
+      "width": 4.148,
+      "height": 9.091,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "terrace_seating_02",
+      "physicalImage": "physical/seating_10.png",
+      "ambienceImage": "ambience/seating_10.png",
+      "x": 57.751,
+      "y": 48.834,
+      "width": 4.148,
+      "height": 9.091,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "terrace_seating_03",
+      "physicalImage": "physical/seating_11.png",
+      "ambienceImage": "ambience/seating_11.png",
+      "x": 58.352,
+      "y": 65.734,
+      "width": 4.148,
+      "height": 9.091,
+      "note": "New standalone illustrations, reposition/resize when integrating; old placement box only an approximate starting point"
+    },
+    {
+      "id": "waterfall",
+      "physicalImage": "physical/waterfall.png",
+      "ambienceImage": "ambience/waterfall.png",
+      "x": 63.0,
+      "y": 28.5,
+      "width": 12.0,
+      "height": 51.0,
+      "movable": true,
+      "note": "Independently illustrated transparent asset, fully visible with padding; initial coordinates approximate."
+    },
+    {
+      "id": "stream",
+      "physicalImage": "physical/stream.png",
+      "ambienceImage": "ambience/stream.png",
+      "x": 21.0,
+      "y": 75.5,
+      "width": 43.5,
+      "height": 14.8,
+      "movable": true,
+      "note": "Independently illustrated transparent asset, fully visible with padding; initial coordinates approximate."
+    }
+  ],
+  "ambienceBase": "ambience/ambience_base.png",
+  "fixedAmbienceOverlays": [
+    "ambience/street_noise_fixed.png",
+    "ambience/stream_fixed.png",
+    "ambience/waterfall_fixed.png"
+  ],
+  "note": "Original standalone SVGs and transparent PNGs. Physical base is preliminary, not fully reconstructed.",
+  "backgrounds": {
+    "physical": "physical/park_base.png",
+    "ambience": "ambience/ambience_base.png"
+  },
+  "assetCount": 17
+}
