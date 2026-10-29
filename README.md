@@ -13,6 +13,20 @@ npm run dev
 
 `npm run build` creates the production app in `dist`; `npm run preview` serves it.
 
+## GitHub Pages
+
+In the repository's **Settings → Pages → Build and deployment**, set **Source**
+to **GitHub Actions**. Push the source files, `vite.config.js`, and
+`.github/workflows/deploy.yml` to `main`. The workflow installs dependencies,
+builds the app, and publishes `dist` automatically. The expected URL is
+https://dwivm163-dot.github.io/greenacre_park/.
+
+The root `index.html` is a development entry point and cannot be served directly
+by GitHub Pages because it loads JSX source. Keep `dist` ignored: the workflow
+uploads the generated build separately. Relative production asset paths allow
+the build to work at the repository URL. For another static host, upload the
+contents of `dist` after running `npm run build`.
+
 ## Assets and placement
 
 - Physical background: `background.png` at the project root. Physical water layers use the root `stream.png` and `waterfall.png`; `src/mapData.js` overrides the original manifest image paths with these imports.
