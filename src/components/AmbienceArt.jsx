@@ -141,8 +141,6 @@ function AmbienceAtmosphereArt({ layers }) {
       <defs>
         <filter id="paper-grain"><feTurbulence type="fractalNoise" baseFrequency=".76" numOctaves="3" seed="7" /><feColorMatrix type="saturate" values="0" /></filter>
       </defs>
-      <text x="80" y="77" className="ambience-art-title">GREENACRE PARK</text>
-      <text x="82" y="107" className="ambience-art-subtitle">A M B I E N C E</text>
       <g opacity=".85" data-sensory-layer="greenery" visibility={layers.greenery ? 'visible' : 'hidden'}>
         <Foliage cx={301} cy={312} rx={34} ry={114} seed={12} count={250} />
         <Foliage cx={305} cy={564} rx={32} ry={111} seed={13} count={220} />

@@ -62,7 +62,8 @@ export default function useMapDragging({ objects, onMove, selectedId, onSelect }
     return () => { active = false; };
   }, []);
   const point = event => {
-    const rect = canvasRef.current.getBoundingClientRect();
+    // Pointer coordinates must use the zoomed scene, not its cropped viewport.
+    const rect = canvasRef.current.querySelector('.map-scene').getBoundingClientRect();
     return { x: (event.clientX - rect.left) / rect.width, y: (event.clientY - rect.top) / rect.height };
   };
   const hitsAt = p => objects.filter(object => {

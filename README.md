@@ -132,3 +132,14 @@ The publication layout uses the warm paper / forest ink / terracotta palette, lo
 The reset button is labeled Reset Arrangement. Time controls retain the original visitors, conversation intensity/counts, and state. Full-row checkbox labels support mouse, touch, and keyboard. Selected layers retain their sensory colors; disabled rows are muted and struck through.
 
 Browser checks cover layout at 1600, 1024, 900, 760, 390, and 320px, equal map dimensions, aligned desktop lower sections, mobile section order, no document overflow, loaded fonts, all 17 independent drags, overlap selection, live synchronization and trails, sensory controls, atmosphere updates, reset, and native mobile touch dragging. Run `npm run test:interaction` to repeat them.
+
+## Physical map framing
+
+The physical scene uses a uniform 1.22× zoom anchored at its top-left corner.
+The viewport keeps the original 1658:949 ratio and clips excess buildings at the
+right and bottom while preserving the left road and traffic. Background and all
+movable illustrations share the transform; source images, placement coordinates,
+and illustration proportions are unchanged. Pointer coordinates use the zoomed
+scene bounds so dragging remains aligned after zoom and responsive resizing.
+The internal “GREENACRE PARK / AMBIENCE” SVG title has been removed from the
+sensory map; its figure caption remains above the map.
