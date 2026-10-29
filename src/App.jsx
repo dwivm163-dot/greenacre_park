@@ -39,7 +39,7 @@ export default function App() {
         <div className="maps">
           <PhysicalMap objects={objects} onMove={moveObject} selectedId={selectedId} onSelect={setSelectedId} />
           <AmbienceMap objects={objects} time={time} layers={layers} />
-          <AtmosphereProfile objects={objects} time={time} />
+          <AtmosphereProfile objects={objects} time={time} layers={layers} />
           <LayerControls layers={layers} onChange={toggleLayer} />
         </div>
       </div>

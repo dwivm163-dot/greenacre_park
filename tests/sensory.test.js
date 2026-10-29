@@ -18,7 +18,7 @@ test('clustering increases social concentration; dispersion reduces it',()=>{con
 test('waterfall and street proximity increase their respective exposures',()=>{const nearFall=analyze(clustered.map(o=>({...o,x:.72,y:.44})));const far=analyze(clustered.map(o=>({...o,x:.3,y:.2})));assert(nearFall.factors.waterfall>far.factors.waterfall);const nearStreet=analyze(clustered.map(o=>({...o,x:.24,y:.45})));assert(nearStreet.factors.traffic>nearFall.factors.traffic);assert.match(nearFall.description,/waterfall/);assert.match(nearStreet.description,/street/);});
 test('adding nearby tree and pergola shade improves shelter and calm',()=>{const seats=Array.from({length:11},(_,i)=>seat(i,.4,.36));const a=analyze(seats,'Morning');const b=analyze(seats,'Morning',environment.filter(o=>!o.id.startsWith('tree')&&!o.id.startsWith('pergola')));assert(a.factors.shade>b.factors.shade);assert(a.scores.Calm>b.scores.Calm);});
 test('time changes activity and description without any position mutation',()=>{const before=structuredClone(dispersed);const m=analyze(dispersed,'Morning'),a=analyze(dispersed),e=analyze(dispersed,'Evening');assert(a.scores['Social Activity']>e.scores['Social Activity']);assert(e.scores['Social Activity']>m.scores['Social Activity']);assert.notEqual(m.description,a.description);assert.deepEqual(dispersed,before);});
-test('all scores are finite, bounded, deterministic; hidden layers are not model inputs',()=>{for(const time of Object.keys(TIMES))for(const seats of [clustered,dispersed,[]]){const profile=analyze(seats,time);assert(Object.values(profile.scores).every(n=>Number.isFinite(n)&&n>=0&&n<=100));assert.deepEqual(profile,analyze(seats,time));}assert.equal(analyzeAtmosphere.length,1);});
+test('all scores are finite, bounded, and deterministic',()=>{for(const time of Object.keys(TIMES))for(const seats of [clustered,dispersed,[]]){const profile=analyze(seats,time);assert(Object.values(profile.scores).every(n=>Number.isFinite(n)&&n>=0&&n<=100));assert.deepEqual(profile,analyze(seats,time));}assert.equal(analyzeAtmosphere.length,1);});
 test('a concentrated water-side afternoon can become chaotic; quieter arrangements differ',()=>{const chaotic=analyze(clustered.map(o=>({...o,x:.72,y:.44})));assert.equal(chaotic.classification,'Chaotic & Overstimulating');assert.notEqual(chaotic.classification,analyze(dispersed,'Morning').classification);});
 test('all five interpretations are reachable through arrangement and time',()=>{
  const fallSeats=clustered.map(o=>({...o,x:.72,y:.44}));
@@ -46,4 +46,45 @@ test('conversation cluster totals match visitors and cover all seating areas',()
   for(const prefix of ['central_seating','pergola_seating','terrace_seating'])assert(Object.entries(counts).some(([id,n])=>id.startsWith(prefix)&&n>0));
   assert.deepEqual(counts,conversationCounts(seats.map(o=>({...o,x:.5})),time));
  }
+});
+
+
+test('traffic, waterfall masking, and greenery change the reading in the expected direction',()=>{
+ const objects=[...environment,...dispersed];
+ const full=analyzeAtmosphere(objects);
+ const noTraffic=analyzeAtmosphere(objects,'Afternoon',{traffic:false});
+ const noFall=analyzeAtmosphere(objects,'Afternoon',{waterfall:false});
+ const noNature=analyzeAtmosphere(objects,'Afternoon',{greenery:false});
+ assert(noTraffic.scores.Noise<full.scores.Noise);
+ assert(noTraffic.scores.Calm>full.scores.Calm);
+ assert(noFall.factors.traffic>full.factors.traffic);
+ assert(noFall.scores.Noise>full.scores.Noise);
+ assert(noFall.scores.Calm<full.scores.Calm);
+ assert(noNature.scores.Calm<full.scores.Calm);
+ assert.match(noFall.description,/unmasked/);
+ assert.match(noNature.description,/loses some natural tranquility/);
+ const neither=analyzeAtmosphere(objects,'Afternoon',{traffic:false,waterfall:false});
+ assert.equal(neither.factors.traffic,0);
+ assert(neither.scores.Noise<noFall.scores.Noise);
+});
+
+test('all eight layers affect the reading and all 256 combinations remain bounded and resettable',()=>{
+ const objects=[...environment,...dispersed], before=structuredClone(objects);
+ const full=analyzeAtmosphere(objects), keys=Object.keys(defaultLayers());
+ for(const key of keys){
+  const profile=analyzeAtmosphere(objects,'Afternoon',{[key]:false});
+  assert.notDeepEqual(profile.scores,full.scores,key+' must affect scores');
+ }
+ for(let mask=0;mask<256;mask++){
+  const layers=Object.fromEntries(keys.map((key,i)=>[key,Boolean(mask&(1<<i))]));
+  for(const time of Object.keys(TIMES)){
+   const profile=analyzeAtmosphere(objects,time,layers);
+   assert(Object.values(profile.scores).every(n=>Number.isFinite(n)&&n>=0&&n<=100));
+   assert.deepEqual(profile,analyzeAtmosphere(objects,time,layers));
+  }
+ }
+ assert.deepEqual(objects,before);
+ assert.deepEqual(analyzeAtmosphere(objects,'Afternoon',defaultLayers()),full);
+ const quiet=analyzeAtmosphere(objects,'Afternoon',Object.fromEntries(keys.map(key=>[key,false])));
+ assert.equal(quiet.scores.Noise,0);assert.equal(quiet.scores['Social Activity'],0);
 });

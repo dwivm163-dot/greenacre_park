@@ -96,24 +96,32 @@ The default time is Afternoon (12 illustrative visitors, high conversation activ
 
 The always-visible clickable Sensory Key controls traffic, waterfall sound, flowing water, conversations, movement, tree shade, pergola shade, and smell/greenery independently. Both the PNG underlayer and enhanced SVG of each movable object share its visibility. Hidden movement geometry continues updating. Fixed scent/foliage marks form the greenery layer. The faint red marks baked into the original ambience background are masked over its leftmost 11%; the independently controlled traffic SVG supplies the visible red marks. The source image is unchanged, and fixed entrance shading remains visible.
 
-`src/sensoryModel.js` is a pure deterministic model, separate from visualization visibility. `AtmosphereProfile.jsx` derives its output from the shared positions and time. Distances use aspect-correct normalized coordinates; scores are clamped to 0–100:
+`src/sensoryModel.js` is a pure deterministic model driven by shared positions,
+time, and all eight sensory toggles. Disabled layers stop contributing to the
+reading without removing physical objects. Distances use aspect-correct normalized
+coordinates; scores are clamped to 0–100.
 
-- Seating concentration: 65% mean pair proximity + 35% mean closest-neighbor proximity, with a Gaussian radius of 0.21 canvas heights.
-- Visitor activity: visitors / 12.
-- Waterfall and stream exposure: distance from approximate source footprints with Gaussian falloff radii of 0.20 and 0.14 canvas heights. Waterfall exposure adds noise; softer flowing water supports calm.
-- Tree shade: nine soft elliptical fields attached to the three clusters. Pergola shade: a soft rectangular field. Coverage combines overlapping influences as `1 - product(1 - influence)`.
-- Traffic exposure: exponential distance falloff from the fixed entrance (220, 490), with a radius of 0.40 canvas heights.
-- Competing sensory overlap combines conversation with waterfall/traffic exposure and exposed, unshaded activity. Destination concentration combines seating concentration and its overlap with shade.
-- Noise = 48% waterfall + 34% traffic + 10% visitor activity + 8% activity × seating concentration.
-- Social activity = 12% baseline + 43% visitor activity + 45% seating concentration.
-- Calm = 24% baseline + 40% shade + 20% stream exposure + 16% distributed destinations − 28% concentrated activity − 24% waterfall − 18% traffic.
-- Sensory intensity = 40% noise + 35% social activity + 25% competing sensory overlap.
+- Active waterfall sound masks 80% of street exposure across the small park,
+  while proximity to the waterfall still adds its own sound. Turning it off
+  exposes traffic; removing traffic eliminates street exposure.
+- Conversations and movement independently contribute social activity and
+  competing sensory overlap, scaled by time and seating concentration.
+- Tree and pergola toggles independently control their shade fields. Greenery
+  adds tranquility and strengthens the restorative contribution of shade.
+- Flowing water adds calm when active and near seating. Density still derives
+  from the physical arrangement, including when activity layers are disabled.
+- Noise combines waterfall exposure (48%), masked traffic exposure (90%),
+  conversation activity (10%), and concentrated conversation (8%). Social activity
+  combines active conversation and movement with seating density. Calm rewards
+  shade, greenery, soft water, and distributed destinations, and subtracts sound
+  and concentrated activity. Sensory intensity combines noise (40%), social
+  activity (35%), and competing overlap (25%).
 
 Classification priority: Chaotic & Overstimulating when intensity ≥66, concentration ≥65%, and overlap ≥40%; Noisy & Stimulating when noise ≥48; Social & Lively when social ≥64 and concentration ≥22%; Calm & Secluded when calm ≥50 and social <58; otherwise Balanced & Restorative. Thresholds use unrounded scores; displayed indicators are rounded. Descriptions select the strongest spatial contributors and identify the selected time/activity. All five classes are covered by scenario tests.
 
-These are artistic heuristics, not validated acoustics, measured attendance, weather, or a prediction of human behavior. Sound footprints, shade coverage, and circulation are simplified proximity fields; there is no sound propagation through architecture, sun-angle simulation, or collision-based pedestrian simulation. Hidden layers remain in the model because they still represent the physical environment.
+These are artistic heuristics, not validated acoustics, measured attendance, weather, or a prediction of human behavior. Sound footprints, shade coverage, and circulation are simplified proximity fields; there is no sound propagation through architecture, sun-angle simulation, or collision-based pedestrian simulation. Only active sensory layers contribute to the model; the physical arrangement remains available for spatial calculations.
 
-Run `npm run test:model` for nine scoring/scenario checks. `npm run test:interaction` now also checks time/count/intensity changes, all eight independent toggles, physical-map and model independence from visibility, hidden-object movement and live route updates, responsive controls, and the expanded reset defaults.
+Run `npm run test:model` for scoring scenarios, layer interactions, and all 256 toggle combinations. `npm run test:interaction` now also checks time/count/intensity changes, all eight independent toggles, physical-map independence and live model responses to sensory toggles, hidden-object movement and live route updates, responsive controls, and the expanded reset defaults.
 
 ## Editorial interface
 

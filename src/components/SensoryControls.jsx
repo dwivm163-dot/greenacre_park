@@ -13,13 +13,13 @@ const symbols={traffic:'street',waterfall:'waterfall',stream:'water',conversatio
 const descriptions={traffic:'Traffic + urban sound',waterfall:'Continuous sound + cool air',stream:'A gentle, rhythmic sound',conversations:'Social energy around seating',movement:'Paths through the landscape',trees:'Leafy shade + quiet retreat',pergola:'Shelter beneath the structure',greenery:'Natural scents + vegetation'};
 export function LayerControls({ layers, onChange }) {
   return <section className="sensory-key layer-controls" aria-labelledby="key-title">
-    <div className="section-heading"><h2 id="key-title">FIG. 04 / SENSORY KEY</h2><span>Select to show / hide</span></div>
+    <div className="section-heading"><h2 id="key-title">FIG. 04 / SENSORY KEY</h2><span>Select sensory layers</span></div>
     <div className="layer-options">{Object.entries(LAYERS).map(([key,label])=><label key={key} className={layers[key]?'layer-row':'layer-row is-hidden'}>
       <LegendSymbol kind={symbols[key]} />
       <span className="layer-copy"><span className="layer-name">{label}</span><span className="layer-description">{descriptions[key]}</span></span>
       <input type="checkbox" aria-label={label} checked={layers[key]} onChange={()=>onChange(key)} />
     </label>)}</div>
-    <p className="key-note">Read the landscape in layers. Visibility changes what you examine, not the environment being interpreted.</p>
+    <p className="key-note">Read the landscape in layers. Switch layers on or off to explore how their combinations change the atmospheric reading.</p>
     <div className="key-annotation"><span>Visible arrangement</span><span aria-hidden="true">↔</span><span>Invisible atmosphere</span></div>
   </section>;
 }
