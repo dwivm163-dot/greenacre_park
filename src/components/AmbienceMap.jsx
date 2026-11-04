@@ -1,4 +1,5 @@
 import React from 'react';
+import './ambience-map.css';
 import ParkMap from './ParkMap.jsx';
 
 export default function AmbienceMap({ objects, time, layers, onToggleLayer }) {

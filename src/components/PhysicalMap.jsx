@@ -1,4 +1,5 @@
 import React from 'react';
+import './physical-map.css';
 import ParkMap from './ParkMap.jsx';
 import useMapDragging from '../hooks/useMapDragging.js';
 

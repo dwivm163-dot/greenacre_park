@@ -1,0 +1,42 @@
+/* PhysicalMap — panel and scene */
+.physical-panel {
+  grid-area: physical;
+}
+/* Crop only the right/bottom edges. Scale the entire scene uniformly so the
+   road stays visible and every illustration keeps its shared coordinates. */
+.physical-panel .map-canvas {
+  overflow: hidden;
+}
+.physical-panel .map-scene {
+  transform: scale(1.22);
+  transform-origin: top left;
+}
+/* PhysicalMap — dragging, hover and selection */
+.physical-panel .map-canvas {
+  touch-action: none;
+  user-select: none;
+}
+.physical-panel .map-background {
+  pointer-events: none;
+}
+.physical-panel .map-canvas.has-hover {
+  cursor: grab;
+}
+.physical-panel .map-canvas.is-dragging {
+  cursor: grabbing;
+}
+.physical-panel .map-object {
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+.physical-panel .map-object.is-hovered {
+  outline: 1px dashed #245650;
+}
+.physical-panel .map-object.is-selected,
+.physical-panel .map-object:focus-visible {
+  outline: 2px solid #245650;
+  z-index: 3;
+}
+.physical-panel .map-object.is-selected img {
+  filter: drop-shadow(0 0 3px #faf7ed);
+}

@@ -1,0 +1,243 @@
+/* TimeControls */
+.time-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  padding: 10px 0 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--ink);
+}
+.control-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+}
+.time-segments {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.time-segments button {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 5px 0;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.time-segments button + button::before {
+  content: '/';
+  position: relative;
+  left: -7px;
+  color: var(--rule);
+}
+.time-segments button[aria-pressed='true'] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.time-segments button:hover {
+  color: var(--accent);
+}
+.visitor-count {
+  padding-left: 20px;
+  border-left: 1px solid var(--rule);
+  font-size: 10px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* AmbienceMap — panel, scene and objects */
+.ambience-panel {
+  grid-area: sensory;
+}
+.ambience-panel .map-canvas {
+  background: #faf7ed;
+  overflow: hidden;
+}
+.ambience-panel .map-background {
+  opacity: .13;
+}
+/* A presentation zoom, applied equally to every layer in the ambience scene.
+   Object coordinates remain shared with the physical map. */
+.ambience-panel .map-scene {
+  transform: translate(-2%, -3%) scale(1.18);
+  transform-origin: top left;
+}
+.ambience-panel .map-object img {
+  opacity: .25;
+}
+.ambience-panel .map-object[data-object-id^="tree_cluster"] img {
+  opacity: .55;
+}
+/* Remove only the baked-in red strip; the original asset stays intact.
+   The independently controlled SVG supplies all visible traffic marks. */
+.ambience-panel .map-background {
+  mask-image: linear-gradient(to right, transparent 0 11%, #000 11% 100%);
+}
+
+/* LayerControls — sensory key */
+.sensory-key {
+  grid-area: key;
+}
+.layer-options {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 0 24px;
+}
+.layer-row {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid #b8bcaf80;
+  cursor: pointer;
+  transition: opacity 160ms ease;
+}
+.layer-row > svg {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+}
+.layer-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.layer-name {
+  font-size: 11px;
+  font-weight: 500;
+}
+.layer-description {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+.layer-row input {
+  margin: 0 0 0 auto;
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  accent-color: var(--ink);
+  cursor: pointer;
+}
+.layer-row.is-hidden > svg, .layer-row.is-hidden .layer-copy {
+  opacity: .4;
+}
+.layer-row.is-hidden .layer-name {
+  text-decoration: line-through;
+}
+.layer-row:hover .layer-name {
+  color: var(--accent);
+}
+.key-note {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 62ch;
+  margin: 20px 0 16px;
+}
+.key-annotation {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 19px;
+  color: var(--muted);
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+/* AmbienceArt — atmosphere and glyphs */
+.ambience-atmosphere {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.paper-grain {
+  mix-blend-mode: multiply;
+}
+.ambience-glyph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ambience-glyph[data-symbol-kind="conversation"] {
+  z-index: 1;
+}
+
+/* AmbienceMovement */
+.ambience-movement {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Responsive controls */
+@media (max-width: 1150px) {
+  .layer-options {
+  column-gap: 16px;
+}
+  .layer-row {
+  gap: 6px;
+}
+  .layer-row > svg {
+  width: 28px;
+  height: 28px;
+  flex-basis: 28px;
+}
+  .time-controls {
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+}
+@media (max-width: 760px) {
+  .time-controls {
+  justify-content: flex-start;
+  padding-top: 15px;
+  margin-bottom: 20px;
+}
+  .visitor-count {
+  flex-basis: 100%;
+  padding-left: 0;
+  border-left: 0;
+}
+  .layer-row {
+  gap: 9px;
+  min-height: 64px;
+}
+  .layer-name {
+  font-size: 11px;
+}
+  .layer-row input {
+  min-width: 14px;
+  width: 14px;
+  height: 14px;
+}
+}
+@media (max-width: 380px) {
+  .layer-options {
+  gap: 0 12px;
+}
+  .layer-row {
+  gap: 6px;
+}
+  .layer-row > svg {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+}
+}
