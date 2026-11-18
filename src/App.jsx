@@ -1,25 +1,18 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import PhysicalMap from './components/PhysicalMap.jsx';
 import AmbienceMap from './components/AmbienceMap.jsx';
-import { initialObjects } from './mapData.js';
-import { defaultLayers } from './sensoryModel.js';
+import useSharedPark from './hooks/useSharedPark.js';
+import { ActivityFeed, Presence } from './components/Collaboration.jsx';
 import { TimeControls, LayerControls } from './components/SensoryControls.jsx';
 import AtmosphereProfile from './components/AtmosphereProfile.jsx';
 
 export default function App() {
-  const [objects, setObjects] = useState(() => initialObjects.map(object => ({ ...object })));
+  const shared = useSharedPark();
+  const { objects, time, layers, id, visitors, locks, activity, collaborative, interaction } = shared;
   const [selectedId, setSelectedId] = useState(null);
-  const [time, setTime] = useState('Afternoon');
-  const [layers, setLayers] = useState(defaultLayers);
-  const toggleLayer = key => setLayers(current => ({ ...current, [key]: !current[key] }));
-  const moveObject = useCallback((id, position) => {
-    setObjects(current => current.map(object => object.id === id ? { ...object, ...position } : object));
-  }, []);
   const reset = () => {
     setSelectedId(null);
-    setTime('Afternoon');
-    setLayers(defaultLayers());
-    setObjects(initialObjects.map(object => ({ ...object })));
+    shared.reset();
   };
   return (
     <main>
@@ -30,19 +23,21 @@ export default function App() {
           <p>Rearrange the visible.<br />{' '}Transform the invisible.</p>
         </div>
       </header>
-      <div className="experiment-toolbar">
+      <div className={collaborative ? "experiment-toolbar has-collaboration" : "experiment-toolbar"}>
         <p className="interaction-instruction">Drag elements in the physical map to reshape the atmosphere.</p>
-        <button className="reset-map" type="button" onClick={reset}>Reset Arrangement <span aria-hidden="true">↗</span></button>
+        {collaborative && <Presence id={id} visitors={visitors} />}
+        <button disabled={!shared.canReset} className="reset-map" type="button" onClick={reset}>Reset Arrangement <span aria-hidden="true">↗</span></button>
       </div>
-      <TimeControls time={time} onChange={setTime} />
+      <TimeControls time={time} onChange={shared.changeTime} disabled={collaborative && !id} />
       <div className="maps-scroll">
         <div className="maps">
-          <PhysicalMap objects={objects} onMove={moveObject} selectedId={selectedId} onSelect={setSelectedId} />
+          <PhysicalMap objects={objects} actions={interaction} visitors={visitors} visitorId={id} locks={locks} selectedId={selectedId} onSelect={setSelectedId} />
           <AmbienceMap objects={objects} time={time} layers={layers} />
           <AtmosphereProfile objects={objects} time={time} layers={layers} />
-          <LayerControls layers={layers} onChange={toggleLayer} />
+          <LayerControls layers={layers} onChange={shared.toggleLayer} disabled={collaborative && !id} />
         </div>
       </div>
+      {collaborative && <ActivityFeed activity={activity} />}
       <footer className="publication-footer"><span>Construct Your Own Escape</span><span>A speculative cartography of everyday retreat</span><span>Greenacre Park · 2026</span></footer>
     </main>
   );

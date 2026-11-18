@@ -49,7 +49,7 @@ export function constrainPosition(object, x, y, asset) {
   };
 }
 
-export default function useMapDragging({ objects, onMove, selectedId, onSelect }) {
+export default function useMapDragging({ objects, onMove, selectedId, onSelect, onGrab, onRelease, onNudge, canEdit, session, onCursor }) {
   const canvasRef = useRef(null), drag = useRef(null);
   const [assets, setAssets] = useState({});
   const [hoveredId, setHoveredId] = useState(null);
@@ -74,13 +74,15 @@ export default function useMapDragging({ objects, onMove, selectedId, onSelect }
     const iy = Math.floor(((p.y - object.y) * canvas.height - box.y) / box.height * asset.height);
     return ix >= 0 && iy >= 0 && ix < asset.width && iy < asset.height && asset.alpha[iy * asset.width + ix] >= 8;
   }).reverse().sort((a, b) => Number(b.id === selectedId) - Number(a.id === selectedId));
-  const stop = () => {
+  const stop = (release = true) => {
     const current = drag.current;
     drag.current = null; setDraggingId(null);
+    if (current && release) onRelease(current.id);
     if (current && canvasRef.current.hasPointerCapture(current.pointerId)) canvasRef.current.releasePointerCapture(current.pointerId);
   };
   useEffect(() => { if (drag.current && selectedId !== drag.current.id) stop(); }, [selectedId]);
-  const move = (object, x, y) => onMove(object.id, constrainPosition(object, x, y, assets[object.id]));
+  useEffect(() => { if (drag.current && drag.current.session !== session) stop(false); }, [session]);
+  const move = (object, x, y, dragging) => onMove(object.id, constrainPosition(object, x, y, assets[object.id]), dragging);
   return {
     canvasRef, hoveredId, draggingId,
     canvasHandlers: {
@@ -90,26 +92,37 @@ export default function useMapDragging({ objects, onMove, selectedId, onSelect }
         if (!hits.length) { onSelect(null); return; }
         const index = event.altKey ? (hits.findIndex(o => o.id === selectedId) + 1) % hits.length : 0;
         const object = hits[index];
-        event.preventDefault(); onSelect(object.id); setHoveredId(object.id); setDraggingId(object.id);
-        drag.current = { id: object.id, pointerId: event.pointerId, offsetX: p.x - object.x, offsetY: p.y - object.y, start: { x: object.x, y: object.y } };
+        event.preventDefault(); onSelect(object.id);
+        if (!canEdit(object.id)) return;
+        const current = { id: object.id, session, pointerId: event.pointerId, offsetX: p.x - object.x, offsetY: p.y - object.y, start: { x: object.x, y: object.y } };
+        if (!onGrab(object, accepted => {
+          if (!accepted && drag.current === current) stop(false);
+        })) return;
+        drag.current = current;
+        setHoveredId(object.id); setDraggingId(object.id);
         canvasRef.current.setPointerCapture(event.pointerId);
         canvasRef.current.querySelector(`[data-object-id="${object.id}"]`).focus({ preventScroll: true });
       },
       onPointerMove(event) {
         const current = drag.current, p = point(event);
+        if (event.isPrimary) {
+          const rect = canvasRef.current.getBoundingClientRect();
+          onCursor(event.clientX >= rect.left && event.clientX <= rect.right &&
+            event.clientY >= rect.top && event.clientY <= rect.bottom ? p : null);
+        }
         if (!current) { setHoveredId(hitsAt(p)[0]?.id ?? null); return; }
         if (event.pointerId !== current.pointerId) return;
         const object = objects.find(o => o.id === current.id);
-        move(object, p.x - current.offsetX, p.y - current.offsetY);
+        move(object, p.x - current.offsetX, p.y - current.offsetY, true);
       },
-      onPointerUp(event) { if (drag.current?.pointerId === event.pointerId) stop(); },
-      onPointerCancel(event) { if (drag.current?.pointerId === event.pointerId) stop(); },
-      onLostPointerCapture() { drag.current = null; setDraggingId(null); },
-      onPointerLeave() { if (!drag.current) setHoveredId(null); },
+      onPointerUp(event) { if (drag.current?.pointerId === event.pointerId) stop(); if (event.pointerType !== 'mouse') onCursor(null); },
+      onPointerCancel(event) { if (drag.current?.pointerId === event.pointerId) stop(); onCursor(null); },
+      onLostPointerCapture(event) { if (drag.current?.pointerId === event.pointerId) stop(); },
+      onPointerLeave() { onCursor(null); if (!drag.current) setHoveredId(null); },
       onDragStart(event) { event.preventDefault(); },
       onKeyDown(event) {
         if (event.key === 'Escape') {
-          if (drag.current) { onMove(drag.current.id, drag.current.start); stop(); }
+          if (drag.current) { onMove(drag.current.id, drag.current.start, true); stop(); }
           onSelect(null); return;
         }
         const object = objects.find(o => o.id === event.target.dataset.objectId);
@@ -117,8 +130,15 @@ export default function useMapDragging({ objects, onMove, selectedId, onSelect }
         const direction = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[event.key];
         if (!direction) return;
         event.preventDefault(); onSelect(object.id);
+        if (!canEdit(object.id)) return;
         const step = event.shiftKey ? 15 : 3;
-        move(object, object.x + direction[0] * step / canvas.width, object.y + direction[1] * step / canvas.height);
+        const asset = assets[object.id];
+        if (!asset) return;
+        const delta = { x: direction[0] * step / canvas.width, y: direction[1] * step / canvas.height };
+        onNudge(object, delta, {
+          min: constrainPosition(object, 0, 0, asset),
+          max: constrainPosition(object, 1, 1, asset),
+        });
       },
     },
   };

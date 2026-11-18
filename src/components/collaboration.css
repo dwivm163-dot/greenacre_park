@@ -1,0 +1,90 @@
+.park-presence {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  font-size: .75rem;
+  white-space: nowrap;
+}
+
+.visitor-dot {
+  width: .55rem;
+  height: .55rem;
+  border-radius: 50%;
+}
+
+.remote-cursor {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  color: white;
+  transition: left 65ms linear, top 65ms linear;
+}
+
+.remote-cursor::before {
+  content: '';
+  display: block;
+  width: 9px;
+  height: 9px;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: var(--visitor-color);
+  transform: translate(-50%, -50%);
+}
+
+.remote-cursor span {
+  display: block;
+  margin: -3px 0 0 5px;
+  padding: 2px 5px;
+  border-radius: 2px;
+  background: var(--visitor-color);
+  font-size: 9px;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.physical-panel .map-object.is-remotely-held img {
+  filter: drop-shadow(0 0 3px var(--remote-editor));
+}
+
+.park-activity {
+  margin-block: 1.25rem;
+  padding-block: .65rem;
+  border-top: 1px solid #d6ccba;
+  font-size: .75rem;
+}
+
+.park-activity h2 {
+  margin: 0 0 .4rem;
+  font: inherit;
+  font-weight: 600;
+}
+
+.park-activity ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.park-activity p { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .remote-cursor { transition: none; }
+}
+
+.experiment-toolbar.has-collaboration {
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  row-gap: .45rem;
+}
+
+.has-collaboration .interaction-instruction { margin-right: auto; }
+
+@media (max-width: 760px) {
+  .has-collaboration .interaction-instruction {
+    flex-basis: 100%;
+    max-width: none;
+  }
+}

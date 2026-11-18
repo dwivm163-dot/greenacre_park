@@ -1,31 +1,115 @@
 # Construct Your Own Escape — Greenacre Park
 
-A single-page React/Vite reconstruction of the supplied layered maps.
+An interactive React map of Greenacre Park. Visitors can reshape one shared park and see how their choices change its atmosphere.
 
-## Run
+## Run locally
 
-Use Node.js 22 (or another Vite 6 compatible version):
+With Node.js 22, run these commands in the repository root:
 
 ```sh
-npm install
-npm run dev
+npm ci
+cp .env.example .env.local
+npm start
 ```
 
-`npm run build` creates the production app in `dist`; `npm run preview` serves it.
+In a second terminal, run `npm run dev` and open **http://localhost:5173**. The
+Express and Socket.IO server listens on port 3001 by default. Vite reads
+`VITE_SOCKET_URL` when it starts. Leaving that value blank runs the original
+standalone experience. A configured frontend keeps the latest view visible while
+reconnecting and resumes editing once it receives the current shared state.
 
-## GitHub Pages
+To test from two devices on the same network, run
+`npm run dev -- --host 0.0.0.0 --strictPort`. Replace `localhost` in
+`.env.local` with the host computer's LAN IP. Start the backend with
+`CLIENT_ORIGINS=http://YOUR_LAN_IP:5173 npm start` and open that same exact
+frontend URL on both devices. Use a comma-separated list if you also want to
+allow localhost. Restart Vite after editing `.env.local`.
 
-In the repository's **Settings → Pages → Build and deployment**, set **Source**
-to **GitHub Actions**. Push the source files, `vite.config.js`, and
-`.github/workflows/deploy.yml` to `main`. The workflow installs dependencies,
-builds the app, and publishes `dist` automatically. The expected URL is
-https://dwivm163-dot.github.io/greenacre_park/.
+## Test collaboration
 
-The root `index.html` is a development entry point and cannot be served directly
-by GitHub Pages because it loads JSX source. Keep `dist` ignored: the workflow
-uploads the generated build separately. Relative production asset paths allow
-the build to work at the repository URL. For another static host, upload the
-contents of `dist` after running `npm run build`.
+1. Open the frontend in two windows. Each should show a different visitor name
+   and color, and both should report two online.
+2. Move your pointer over the physical map and look for the labeled cursor in
+   the other window. Drag a tree and check that both maps and the atmospheric
+   reading follow the shared arrangement. Try grabbing the same tree in the
+   second window while the first visitor still holds it.
+3. Change the time and toggle a sensory layer. Check both windows for matching
+   controls, atmosphere, and recent activity.
+4. Close the editor window mid-drag. The last accepted position stays in place,
+   the object becomes available again, and the visitor disappears. Open a new
+   window to verify that it joins the current park. Use Reset Arrangement to
+   restore the park for all windows once nobody is dragging.
+
+With Google Chrome installed, `npm run test:collaboration` launches its own
+backend and frontend and exercises the shared experience in independent browser
+contexts. Run `npm run test:interaction`, `npm run test:routes`,
+`npm run test:model`, and `npm run build` for the existing regression checks
+and production bundle.
+
+## How synchronization works
+
+`src/parkLayout.js` provides the same manifest-based defaults to the server and
+frontend. `server/index.js` sends the current park and activity history when
+each visitor connects. The server checks drag ownership before accepting
+movement. Different visitors can drag different objects simultaneously.
+During a drag it broadcasts accepted positions. On release or disconnect it
+frees the object and records a single activity entry if the object moved.
+Escape restores the grab position before release. Reset waits until there are
+no active drag locks.
+
+`src/hooks/useSharedPark.js` applies snapshots and updates with React's
+`useState`, and attaches and removes Socket.IO listeners in `useEffect`.
+The maps and Atmosphere Profile still derive their renderings from the same
+object positions, time, and sensory toggles. Physical dragging still uses the
+original alpha-aware hit testing and courtyard bounds. Cursor updates are
+throttled, map-relative, and drawn on a pointer-transparent overlay. A
+reconnecting visitor receives the current park and a new temporary identity.
+
+### Assignment state map
+
+| State | Data |
+| --- | --- |
+| Shared on the server | Park objects and their properties, time, sensory layer visibility, per-object drag ownership, visitor names/colors/cursors, and the last five activity entries |
+| Local in the browser | Selection and hover, pointer capture and drag offset, keyboard focus, open details and tooltips, viewport, and connection status |
+| Derived in React | Sensory glyphs, movement paths, conversation counts, and Atmosphere Profile scores |
+
+All visitors join one park on a single server instance. The park and its
+recent activity live in memory and reset when the server process restarts.
+Browsers independently derive matching atmosphere from shared inputs.
+
+## Deploy to Render and GitHub Pages
+
+### Render backend
+
+1. Create a **Web Service** linked to this repository. Select Node and leave the
+   root directory at the repository root so the server can read the manifest.
+2. Set **Build Command** to `npm ci --omit=dev`, **Start Command** to
+   `npm start`, and **Health Check Path** to `/health`. Use one instance.
+3. Set `NODE_VERSION` to `22.x` and `CLIENT_ORIGINS` to
+   `https://dwivm163-dot.github.io` for this repository. Use the origin of your
+   own Pages site if different. Origins contain the scheme and host, with no
+   repository path or trailing slash. Render supplies `PORT`.
+4. Deploy and open `https://YOUR-SERVICE.onrender.com/health`. It should return
+   `{"status":"ok"}`.
+
+[Render Express guide](https://render.com/docs/deploy-node-express-app) ·
+[Render WebSocket support](https://render.com/docs/websocket) ·
+[Render Node version settings](https://render.com/docs/node-version)
+
+### GitHub Pages frontend
+
+1. Under **Settings → Pages → Build and deployment**, choose **GitHub Actions**.
+2. Under **Settings → Secrets and variables → Actions → Variables**, add a
+   repository variable named `VITE_SOCKET_URL` with your Render HTTPS URL
+   (for example, `https://YOUR-SERVICE.onrender.com`).
+3. Push the project to `main` or dispatch the existing **Deploy to GitHub Pages**
+   workflow after pushing. It builds and publishes `dist` with the configured
+   backend URL. Keep `dist` ignored. Vite's relative asset paths support the
+   repository subpath.
+4. Open the deployed Pages URL in two windows and repeat the collaboration test.
+
+[GitHub Pages custom workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages) ·
+[GitHub Actions variables](https://docs.github.com/en/actions/concepts/workflows-and-actions/variables)
 
 ## Assets and placement
 
@@ -40,7 +124,7 @@ contents of `dist` after running `npm run build`.
 
 The supplied README describes the base illustration as preliminary and the manifest describes placements as approximate. The manifest supplies the object identities; the revised layout is fitted to the replacement background without modifying the illustrations. The preview JPGs are references only, never flattened map substitutes. Four pergola seating symbols are absent from the supplied ambience preview JPG but are rendered here because all 17 manifest pairs are required.
 
-`App.jsx` owns the shared object-position state. `PhysicalMap` handles pointer interaction; both maps render the same normalized positions. Reset Arrangement restores the original placement array, Afternoon time, all visible sensory layers, and the derived default atmosphere profile.
+`App.jsx` consumes the park state from `useSharedPark`. `PhysicalMap` handles pointer interaction; both maps render the same normalized positions. Reset Arrangement restores the original placement array, Afternoon time, all visible sensory layers, and the derived default atmosphere profile.
 
 ## Verification
 
